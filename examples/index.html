@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+		<title>H5数字键盘</title>
+		<script type="text/javascript" src="diy-keyboard.js"></script>
+		<style type="text/css">
+			body{
+				margin: 0;
+			}
+			.diy-ttop{
+				height: 36px;
+				line-height: 36px;
+				background: #FFF;
+				font-size: 14px;
+				text-align: center;
+				border-top: 1px #EEEEEE solid;
+			}
+			
+			.diy-title{
+				width: 100%;
+			}
+			
+			.nav{
+				width: 100%;
+				height: 48px;
+				line-height: 48px;
+				border-bottom: 1px #D6CDBF solid;
+				text-align: center;
+				background: #FFFFFF;
+			}
+			
+			label{
+				font-size: 24px;
+				display: inline-block;
+				margin: 15px 0 0 15px;
+			}
+			
+			.line{
+				margin-top: 15px;
+				background: #FFFFFF;
+			}
+	
+			.diy-keyboard{
+				box-sizing: border-box;
+				padding: 10px 0;
+				height: 56px;
+				border-bottom: 1px #D6CDBF solid;
+				margin-left: 20px;
+				font-size: 40px;
+			}
+			
+			.diy-input{
+				width: 100%;
+				height: inherit;
+				display: inline-block;
+				white-space: nowrap;
+				overflow: hidden;
+			}
+			
+			.diy-textarea{
+				float: left;
+			}
+			
+			#diy-cursor{
+				display: inline-block;
+				animation: flicker .6s infinite 0s ease-in-out alternate;
+				background: #000000;
+				width: 2px;
+				height: 40px;
+				visibility: hidden;
+			}
+			
+			@keyframes flicker{
+				0% { opacity: 1;}
+				40% { opacity: 1;}
+				41% { opacity: 0;}
+				100% { opacity: 0;}
+			}
+			
+			.diy-cursor{
+				animation: none !important;
+			}
+				
+			#diy-keyboard{
+				position: fixed;
+				margin: 0;
+				left: 0;
+				bottom: 0;
+				background: #FFF;
+				font: 24px Helvetica,Arial,"\5b8b\4f53",sans-serif;
+				animation: show-keyword .3s;
+				width: 100%;
+			}
+				
+			#diy-keyboard table{
+				width: 101%;
+			}
+			
+			@keyframes show-keyword{
+				from{ bottom: -232px; }
+				to{ bottom: 0; }
+			}
+			
+			.diy-keyboard-hide{
+				animation: hide-keyword .3s !important;
+				bottom: -232px !important;
+			}
+			
+			@keyframes hide-keyword{
+				from{ bottom: 0px; }
+				to{ bottom: -232px; }
+			}
+			#diy-keyboard table.retina-adp .diy-key{
+				border-top: .5px #CCC solid;
+				border-right: .5px #CCC solid;
+			}
+			.diy-key{
+				float: left;
+				width: 100%;
+				text-align: center;
+				height: 48px;
+				line-height: 48px;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				box-sizing: border-box;
+				border-top: 1px #CCC solid;
+				border-right: 1px #CCC solid;
+			}
+			.diy-key:active{
+				background-color: #DBDBDB;
+			}
+
+			.diy-del{
+				display: inline-block;
+				background: no-repeat center url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGkAAABHCAQAAACuLaH3AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAAArwAAAK8ACwB0c8AAAU8SURBVGje7Zt9TFV1GMc/cC9vFwo3yJyIQC9CoiFFWEYyV6tZCzZ0ubXmFuaglpO5pltBbRitWTlamq41Jm4118iRo7ZqlbklWbmCtMwAgaHDF0S6yJvJ7Q/gep7LvXTOub9z7tju9/x17+E+z/mc8zu/832e3wHCCiussPwqQkkUB+mkKIoV+EgHaWeAcTuQknmJEluQ2uiki5M00W9lqnh2cR2PjdsojeQTaRVQDJUM2wo0sfVQQbwVQA424Q4BkAcPI+wgWj3SevpCBOTBwwBP+Tso87d0BCW8S4r38xD1nLZuhOMhlnSWk43T+91vrOO0uhSP0Clu2R3EWYYzpUgWUMNFTd5dGsAglc8pTeBxdnOT5UBTWM8z5s3cSrKasEtpFkCfMNcmIIBEGr25z5GpImQWR8RtepBUG4EANntzD1IQfLj5fCaAjnCbzUBQSP9k9iEKgw12CwcY1wD9RLbtQJDJWVVIc9gnzE8r94UACLJUIcXxJtc0QJ08HBIgZUhRbOWqBuiC/2f37EFyUM6ABugyGy10CrYgrRHP7CG24AgZkBKkYro0QMNU22B+LEUqpEMDNMZOXIZjxJHBrTOYZBc53EOiPUj5/K4Bus77uhPf0GL20c1xNhDrd38adVyinwYWWY+U7ePmGky4OSf1k793s83PkE2nyZuhXpezDgIpjcPC/HzBfMNAkMoJcR/GBATy0KzL0ZtGmsdBYX6+J8sEECSJK+0Wk0s6n4uTdsgHWClSEnuE+TnB/aaAALaIlssQL0+2QhbRJE5aJ4/qimcKKYZakayDB00DQRzVjGqijVBFNOl8K65QF4/rjGcCycWrwvx0Uxxk4zGeahHRzQd8J05aO0/qzmEYyenTm7tAkYJOagyviajjAugMjxmIZRApknJvgeXBw0VKFZmfWCoZEkPtxhUyAmQYKYM2cStvVejm4qgS5ndia2O1wTgGkQoY1KTbG+B5b1YOtvsA9VFsOMqMSNMLBDfDmk/LyVGKdBcrfb6Jp4AEpTmmKYGPxFk8qrC7sIyjfu6kEd422AU0POOl8pVI+Y2iptbdfoE8TPRqjUCZeC4t4Qcfs5qi74czKJdjAuMsVwTUTuZYiQTZ/CwOoCHIRm0uv4p4LTzEC2L2u2agCW3S4z3ASU3Cf9ljok6aUp7PCWphBeDkRfEEHGW3zhymnfhqujUJx6gxWZ67aBBArayY3BNFmVihGmOTtUiwlvNiZqo0tfSRS69fIJhYh7is2dtIlLVIEZSLhcsrPGei1XU7f/kMOa0cbNRMFHW64gdVqEfzijCbvawxjBRJzWRp0Uy+n/1ONkweYqvOmizIdoqLKkbE5LvWcIxEiqiiLOAah4N7KaOUTJ2OP+imV4JPfftHUOWgCiloTSaxX0C1hGjFQiESzOVTMREfU7OgGEokSONrAfWl7cuZypEghx+F8zvAvNmOBHn8Ka7Uh9w825FgFe3CwLxjouUfvBSu1QIU0aOBGma74lJej5ZwTiVSBM8IqzlEhe3LZ+u8jU4lSOBksyjfLvGsujd5dOkNb+5+8tSEdLJNmKRLlNgIlMMZb+YOFqoKG8/rosvdxRM2AWVxSJP38PRK2OyAucpbpLDeWwospIZ/+NvS9/FcpJFNKcu837mpw+37h8H0upOp5WlNhB76LHwL2YOLFOJEhr1UMKo2zQKfV6Ts3Y7rXNk1qDsC9uas3lpZZdWAWMovtuMM8h53BjogFWN/JbUs/v9/HFCk85ziYxpE5145EmSQhscmpF66A+OEFVZYYc2g/wDyezaZdiCe3QAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxNS0xMC0xM1QwMDoxOTowMSswODowMKShO6kAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTUtMTAtMTNUMDA6MTk6MDErMDg6MDDV/IMVAAAATnRFWHRzb2Z0d2FyZQBJbWFnZU1hZ2ljayA2LjguOC0xMCBRMTYgeDg2XzY0IDIwMTUtMDctMTkgaHR0cDovL3d3dy5pbWFnZW1hZ2ljay5vcmcFDJw1AAAAWXRFWHRzdmc6Y29tbWVudAAgR2VuZXJhdG9yOiBTa2V0Y2ggQmV0YSAzLjMuMiAoMTIwNDEpIC0gaHR0cDovL3d3dy5ib2hlbWlhbmNvZGluZy5jb20vc2tldGNoINj5ilsAAAAQdEVYdHN2Zzp0aXRsZQBkZWxldGU1frB8AAAAGHRFWHRUaHVtYjo6RG9jdW1lbnQ6OlBhZ2VzADGn/7svAAAAGHRFWHRUaHVtYjo6SW1hZ2U6OkhlaWdodAAyNTVwyhWjAAAAF3RFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADM3Mzms6H4AAAAZdEVYdFRodW1iOjpNaW1ldHlwZQBpbWFnZS9wbmc/slZOAAAAF3RFWHRUaHVtYjo6TVRpbWUAMTQ0NDY2Njc0MTaq13oAAAATdEVYdFRodW1iOjpTaXplADQuMzJLQkLL8B1NAAAAWnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8vaG9tZS93d3dyb290L3d3dy5lYXN5aWNvbi5uZXQvY2RuLWltZy5lYXN5aWNvbi5jbi9zcmMvMTE4NzgvMTE4Nzg0OS5wbmelPwgIAAAAAElFTkSuQmCC");
+				background-size: 36px 24px;
+				width: 100%;
+				height: 96px;
+			}
+			
+			.diy-hidden{
+				background: no-repeat center url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIXSURBVFjD7dXPThNRFMfxzwyFEmgQC5FgC6gI8jy+g0tjQjQhuAATFiQsiBqfwGBioo+hz4B2RaT8iSAEgZQCM25IgXaKRSBu+p3FzZx7cn5z7pz8Lk2aNGnS5OoECZEuPULxpSvFdmyKzodTNYmPjesV/IMAO+YtXJzW64v4Cs9XvRd3kJXFgWUHZ3o47SdIjBJIy0u7LWvj4iOComeW9GkVC5Rty0qhbEuPlFjgyC/d2sQCh9YNeeNBbalkgZKCsnmPREKLZkwbEFg0ZUa/WOCHSRPGRELfPFFQSiqVLBCgTc4A2NEhbxC/tcvLgViHuycZu9okTSTChiYkrlqT3urQmEBQtSa91SFVd+fQum6R0LqSNSmhNQdWT6ZnTcm67EnGodbLCYRWTegEewrGtePQnudaQMmiyUrGqnuXE4j0eWlEJPTdnCk5sdPZDxS98sKoSKjgabVF/P2I0h4aA8cyRg1W7XfKGD7JiKXrlWnsJydNTINeldxBjLKijEhoxb7lKvsLLNu3okskVFTWliyZLNBuxJLZilXsmpaqEjiya7ZiFRlD2hsXyHldx+ycEzlvdrlGBLZsIW24sROuYdvWxQIb5sVXuHDe+Vkbro5c65V54zRkWEjp0XLmXju26eg6P+SWOSuVZ9Vb2evudcAHR2KxY5+TLser02/BscinGl+6NvLe++j+TZWHXndusnyTJv+FP+p4w1i8/79HAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE1LTA3LTI1VDIxOjUwOjAyKzA4OjAwyi/mOQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxMy0wNi0xNFQxMDo0MToxNiswODowMFTNImUAAABOdEVYdHNvZnR3YXJlAEltYWdlTWFnaWNrIDYuOC44LTEwIFExNiB4ODZfNjQgMjAxNS0wNy0xOSBodHRwOi8vd3d3LmltYWdlbWFnaWNrLm9yZwUMnDUAAAAYdEVYdFRodW1iOjpEb2N1bWVudDo6UGFnZXMAMaf/uy8AAAAXdEVYdFRodW1iOjpJbWFnZTo6SGVpZ2h0ADc2S/X56QAAABZ0RVh0VGh1bWI6OkltYWdlOjpXaWR0aAA3NrNaOWQAAAAZdEVYdFRodW1iOjpNaW1ldHlwZQBpbWFnZS9wbmc/slZOAAAAF3RFWHRUaHVtYjo6TVRpbWUAMTM3MTE3NzY3NqIuQM0AAAARdEVYdFRodW1iOjpTaXplADU4NkJCt3QlKQAAAFp0RVh0VGh1bWI6OlVSSQBmaWxlOi8vL2hvbWUvd3d3cm9vdC93d3cuZWFzeWljb24ubmV0L2Nkbi1pbWcuZWFzeWljb24uY24vc3JjLzExMTYyLzExMTYyMzYucG5nLzHW1QAAAABJRU5ErkJggg==");
+				background-size: 36px 36px;
+			}
+			
+			.diy-finish{
+				position: relative;
+				display: -webkit-box;
+				-webkit-box-pack: center;
+    			-webkit-box-orient: vertical;
+				background: #2D89EF;
+				font-size: 18px;
+				height: 96px;
+				color: #FFF;
+			}
+			
+			.diy-finish:active{
+				background-color: #3399FF;
+			}
+			
+			.diy-finish-disabled:after{
+				content: "";
+				position: absolute;
+				top: 0;
+				right: 0;
+				left: 0;
+				bottom: 0;
+				background: rgba(255, 255, 255, .4);
+			}
+			.diy-key-right{
+				border-right: none;
+			}
+			
+			.diy-disabled{
+				background-color: #DBDBDB;
+			}
+			
+			.diy-hide{
+				visibility: hidden;
+			}
+			
+			.diy-scroll{
+				overflow: auto;
+			}
+			.diy-blank{
+				width: 100%;
+				height: 202px;
+			}
+			@media all and (orientation:landscape) { 
+				#diy-keyboard{
+					font-size: 18px;	
+				}
+				.diy-key{
+					height: 32px;
+					line-height: 32px;
+				}
+				.diy-del{
+					background-size: 24px 16px;
+					height: 64px;
+				}
+				
+				.diy-hidden{
+					background-size: 24px 24px;
+				}
+				
+				.diy-finish{
+					font-size: 16px;
+					height: 64px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="view_scroll">
+			<div class="nav">数字键盘DEMO</div>
+			<div class="line">
+				<label>默认</label>
+				<div class="diy-keyboard" format="number"></div>
+			</div>
+			<div class="line">
+				<label>整数</label>
+				<div class="diy-keyboard" format="integer"></div>
+			</div>
+			<div class="line">
+				<label>金额无千分位</label>
+				<div class="diy-keyboard" format="moneyNoComma"></div>
+			</div>
+			以下格式优化中...
+			<div class="line">
+				<label>金额带千分位（实时/失焦）</label>
+				<div class="diy-keyboard" format="money" value="3456765434.38"></div>
+				<div class="diy-keyboard" format="money" real-time="false"></div>
+			</div>
+			<div class="line">
+				<label>银行账户</label>
+				<div class="diy-keyboard" format="bankCard"></div>
+			</div>
+		</div>
+	</body>
+</html>
